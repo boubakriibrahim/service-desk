@@ -1,0 +1,69 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Oriole Packaging Systems}
+\fancyhead[R]{\small ORI-FW-4.8.1}
+\fancyfoot[C]{\small \thepage}
+
+\title{PX-400 Firmware 4.8.1 Release Note}
+\author{Oriole Packaging Systems --- Service Engineering}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\section{Applies to}
+PX-400 systems running firmware~4.8.0 that report intermittent E-217 stops,
+including Northstar Foods Line~4 (asset NSF-PX400-L4).
+
+\section{What changed}
+\begin{itemize}[leftmargin=*]
+\item The E-217 diagnostic sampling window is relaxed so brief, self-recovering
+encoder glitches no longer raise a stop. Genuine signal loss is still detected
+and still raises E-217.
+\item Diagnostic D-17 now samples over twenty index cycles instead of ten and
+reports the worst dropout duration, giving a stronger basis for part decisions.
+\item No motion-control behavior changes. No parameter migration is required.
+\end{itemize}
+
+\section{Field guidance}
+Keep the existing E-217 procedure: inspect the encoder connector and harness,
+run D-17, capture the controller log, and replace EA-400 or HN-44 only on
+diagnostic evidence. Upgrading to 4.8.1 reduces nuisance stops but does not
+repair a marginal connection, so inspection is still required on assets with
+repeated E-217 history.
+
+\section{Upgrade procedure}
+\begin{enumerate}[leftmargin=*]
+\item Confirm the asset is idle and the line is released for maintenance.
+\item Back up the controller configuration to the service laptop.
+\item Flash firmware~4.8.1 over the service link and verify the version string.
+\item Run D-17 once and attach the result to the service work order.
+\end{enumerate}
+
+\section{Rollback policy}
+Downgrade to pre-4.8 firmware is not an approved first response to E-217 and
+requires engineering authorization with a captured fault log. Repeat: inspect
+first, upgrade second, downgrade never without authorization.
+
+\section{Compatibility}
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Item & Status with 4.8.1 \\
+\midrule
+Board PCB-400 Rev~B and Rev~C & Supported \\
+Diagnostic D-17 (20-cycle) & Supported, replaces 10-cycle D-17 \\
+Work orders referencing D-17 results & Remain valid \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

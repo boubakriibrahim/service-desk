@@ -1,0 +1,100 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Oriole Packaging Systems}
+\fancyhead[R]{\small ORI-MAN-PX400-Rev7}
+\fancyfoot[C]{\small \thepage}
+
+\title{PX-400 Field Service Manual\\ \large Fault E-217 Troubleshooting and Diagnostic D-17}
+\author{Oriole Packaging Systems --- Service Engineering}
+\date{Revision 7 \quad September 2026}
+
+\begin{document}
+\maketitle
+
+\section{Safety}
+Isolate mains power and lock out the line before touching the encoder connector,
+harness, or controller cabinet. Verify zero energy with a meter. Never reseat
+connectors with power applied. Record every intervention in the service work
+order before leaving the site.
+
+\section{Fault code reference}
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Code & Meaning & First action \\
+\midrule
+E-210 & Index overtravel & Check mechanical stops, then home offset \\
+E-217 & Encoder signal loss during index & See Section~3, do not replace parts first \\
+E-223 & Controller watchdog timeout & Capture log, cycle control power \\
+E-301 & Firmware image mismatch & Verify firmware version, reflash per release note \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{E-217 troubleshooting procedure}
+E-217 means the motion controller lost a valid encoder signal during an indexed
+movement. After firmware~4.8 the diagnostic sampling window is tighter, so
+marginal encoder connections that used to recover now raise a stop. Work the
+steps in order and stop at the first step that resolves the fault.
+
+\begin{enumerate}[leftmargin=*]
+\item Read the controller fault log and note the E-217 timestamps. Compare them
+with recent firmware or maintenance changes.
+\item Isolate power. Inspect the encoder connector (J7), harness routing, shield
+termination, and visible cable damage along the full cable run.
+\item Reseat the J7 connector. Check the locking tab and confirm the shield
+drain wire is terminated at the controller end only.
+\item Re-apply power and run Diagnostic D-17 (Section~4). Record pass or fail
+with the fault log attached to the work order.
+\item If D-17 fails, replace the indicated component per Section~5 and rerun D-17.
+\item If D-17 passes repeatedly but E-217 stops continue, capture the controller
+log and escalate to engineering with timestamps and the D-17 results.
+\end{enumerate}
+
+Do not downgrade firmware as the first response to E-217.
+
+\section{Diagnostic D-17 procedure}
+D-17 exercises the index axis through ten slow index cycles while sampling the
+encoder channel each millisecond. A pass requires ten clean cycles with no
+signal dropout longer than 2~ms. A fail reports the cycle number and the dropout
+duration; attach this output to the work order as the diagnostic basis for any
+part replacement.
+
+\section{Replacement parts}
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+SKU & Description & Replace when \\
+\midrule
+EA-400 & PX-400 encoder assembly & D-17 fails after connector/harness check \\
+HN-44 & Shielded encoder harness & Visible damage or shield fault found \\
+PS-12 & Controller power module & Only on power-rail fault, never for E-217 alone \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Connector and torque reference}
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Item & Specification \\
+\midrule
+Encoder connector & J7, 17-pin circular, locking tab \\
+J7 coupling torque & 1.2~N\,m \\
+Cabinet ground lug & 2.5~N\,m \\
+Shield termination & Controller end only, drain wire under clamp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

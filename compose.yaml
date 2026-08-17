@@ -1,0 +1,63 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: service_desk
+      POSTGRES_USER: service_desk
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-service_desk}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U service_desk -d service_desk"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - service_desk_db:/var/lib/postgresql/data
+    # Published on loopback only, for local inspection and tests.
+    ports:
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
+
+  api:
+    build: ./apps/api
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./demo:/demo:ro
+      - service_desk_uploads:/data/uploads
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${API_PORT:-8000}:8000"
+
+  laya:
+    profiles: ["models"]
+    build: ./apps/laya
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HF_HOME: /models/huggingface
+      USE_TF: "0"
+    volumes:
+      - service_desk_hf:/models/huggingface
+    ports:
+      - "8010:8010"
+
+  web:
+    build:
+      context: ./apps/web
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+
+volumes:
+  service_desk_db:
+  service_desk_uploads:
+  service_desk_hf:

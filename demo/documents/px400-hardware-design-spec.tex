@@ -1,0 +1,89 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \textcolor{red}{CONFIDENTIAL --- Engineering distribution only}}
+\fancyhead[R]{\small ORI-HW-PCB400-RevC}
+\fancyfoot[C]{\small \textcolor{red}{Confidential} \quad \thepage}
+
+\title{PX-400 Motion Controller\\ \large Hardware Design Specification, Board PCB-400 Rev~C}
+\author{Oriole Packaging Systems --- Hardware Engineering}
+\date{Revision C \quad August 2026 \quad \textcolor{red}{CONFIDENTIAL}}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\textbf{Distribution notice.} This document contains
+confidential design information. Do not share with customers or field service
+beyond the approved summary. Field guidance is published separately in the
+PX-400 Field Service Manual.}}
+\end{center}
+
+\section{Overview}
+Board PCB-400 Rev~C is the motion controller for the PX-400 packaging system.
+It drives one index axis, samples a differential encoder channel, and reports
+faults including E-217 (encoder signal loss during index). This specification
+covers the encoder interface, signal-integrity margins, and the interaction
+with firmware diagnostic timing.
+
+\section{Encoder interface}
+The encoder connects at J7 (17-pin circular). The interface uses RS-422
+differential pairs with 120~ohm termination at the controller receiver. The
+cable shield drain terminates at the controller end only; terminating both ends
+creates a ground loop that injects index-synchronous noise. The receiver
+requires a minimum differential amplitude of 200~mV throughout the index cycle.
+
+\section{Signal integrity and firmware 4.8 timing}
+Firmware~4.8 tightened the E-217 diagnostic sampling window to catch genuine
+signal dropouts earlier. Internal testing showed the tighter window also
+exposes marginal field connections: oxidized J7 contacts or fatigued shield
+terminations that previously recovered within the old window now trip E-217.
+The failure signature is intermittent stops correlated with the firmware~4.8
+deployment date, D-17 passing on a clean bench but failing on the line, and no
+failed component on the bench.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Parameter & Design margin & Field finding \\
+\midrule
+Differential amplitude & $>$~200~mV required, 480~mV typical & Marginal below 260~mV on aged J7 \\
+Dropout tolerance & 2~ms (firmware~4.8) & Old window masked up to 6~ms \\
+Shield termination & Controller end only & Double-terminated sites noisier \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The approved field response is connector and harness inspection with D-17, not
+component replacement and not firmware downgrade. Firmware~4.8.1 relaxes the
+sampling window and extends D-17 sampling; see the release note.
+
+\section{Approved field summary}
+Field service may be told: E-217 after firmware~4.8 usually indicates a
+marginal encoder connection exposed by tighter diagnostics; inspect J7 and the
+harness, run D-17, capture logs, replace EA-400 or HN-44 only on diagnostic
+evidence. The contents of this specification beyond that summary stay
+confidential.
+
+\section{Revision history}
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Rev & Date & Change \\
+\midrule
+B & 2025-03 & Initial release \\
+C & 2026-08 & Added Section~3 timing analysis after field E-217 cluster \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

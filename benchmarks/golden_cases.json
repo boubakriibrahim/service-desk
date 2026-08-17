@@ -1,0 +1,14 @@
+[
+  {
+    "id": "northstar-escalation",
+    "user": "service@demo.local",
+    "task": "Prepare tomorrow's escalation brief for Northstar Foods. Check the maintenance agreement, previous service history, relevant E-217 troubleshooting guidance and parts availability. Recommend next steps and prepare a service work order if the evidence supports one.",
+    "expected_source_titles": [
+      "PX-400 Service Manual",
+      "Service Bulletin SB-PX400-217",
+      "Northstar Foods Maintenance Agreement"
+    ],
+    "forbidden_source_titles": ["Northstar Finance Note"],
+    "expected_action": "create_work_order"
+  }
+]

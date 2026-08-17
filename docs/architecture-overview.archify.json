@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Service Desk architecture",
+    "subtitle": "How a service request becomes a reviewed work order",
+    "output": "architecture-overview.html",
+    "quality_profile": "showcase",
+    "visual_preset": "classic"
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [60, 150],
+    "cols": 4,
+    "gapX": 130,
+    "gapY": 140,
+    "cellW": 220,
+    "cellH": 100
+  },
+  "components": [
+    { "id": "people", "type": "external", "label": "Service team", "sublabel": "Engineer and manager", "row": 1, "col": 0, "size": [210, 76] },
+    { "id": "web", "type": "frontend", "label": "Web app", "sublabel": "Cases, reports, approvals", "row": 1, "col": 1, "size": [210, 76] },
+    { "id": "api", "type": "backend", "label": "Service Desk API", "sublabel": "Access, search, approvals", "row": 1, "col": 2, "size": [210, 76] },
+    { "id": "laya", "type": "security", "label": "Laya service", "sublabel": "Checks requests and labels cases", "row": 0, "col": 2, "size": [210, 76] },
+    { "id": "database", "type": "database", "label": "PostgreSQL database", "sublabel": "Cases, documents, reports, work orders", "row": 2, "col": 1, "size": [210, 76] },
+    { "id": "files", "type": "database", "label": "Document files", "sublabel": "Sample manuals and uploads", "row": 2, "col": 2, "size": [210, 76] },
+    { "id": "embeddings", "type": "external", "label": "Optional search model", "sublabel": "Only used when configured", "row": 0, "col": 3, "size": [210, 76] },
+    { "id": "writer", "type": "external", "label": "Writing model", "sublabel": "Returns report and work suggestion", "row": 1, "col": 3, "size": [210, 76] }
+  ],
+  "connections": [
+    { "id": "people-web", "from": "people", "to": "web", "label": "Open cases and review work", "variant": "emphasis" },
+    { "id": "web-api", "from": "web", "to": "api", "label": "Case requests" },
+    { "id": "api-laya", "from": "api", "to": "laya", "label": "Check request and label case", "variant": "security" },
+    { "id": "api-database", "from": "api", "to": "database", "label": "Read allowed data; save approved work" },
+    { "id": "api-files", "from": "api", "to": "files", "label": "Read and save files", "labelDy": 24 },
+    { "id": "api-embeddings", "from": "api", "to": "embeddings", "label": "Make search vectors", "variant": "dashed" },
+    { "id": "api-writer", "from": "api", "to": "writer", "label": "Draft report", "labelDy": 55 }
+  ]
+}
