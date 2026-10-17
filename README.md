@@ -12,9 +12,13 @@
 
 <br><br>
 
-<a href="assets/service-desk-demo.mp4"><img src="assets/service-desk-poster.jpg" alt="Service Desk launch film. The model suggests. The app checks. A person approves." width="880"></a>
+</div>
 
-<sub>78-second launch film. Every value on screen comes from a real run of the app. Click to play.</sub>
+https://github.com/user-attachments/assets/b993ec59-c925-414a-9ab3-eb1c8b4ab966
+
+<div align="center">
+
+<sub>78-second launch film. Every value on screen comes from a real run of the app.</sub>
 
 </div>
 
